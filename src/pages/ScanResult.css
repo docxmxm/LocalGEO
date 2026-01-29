@@ -620,3 +620,496 @@
     text-align: center;
   }
 }
+
+
+/* ============ Enhanced Styles ============ */
+
+/* Tab Badge */
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  margin-left: 6px;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.tab-badge.danger {
+  background: #ef4444;
+  color: white;
+}
+
+/* Platform Icon */
+.platform-name .platform-icon {
+  margin-right: 6px;
+}
+
+/* ============ Enhanced Why Not Me ============ */
+.whynot-list-enhanced {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.whynot-item-enhanced {
+  padding: 1.25rem;
+  background: #0f172a;
+  border-radius: 10px;
+  border-left: 4px solid #3b82f6;
+}
+
+.whynot-item-enhanced.critical {
+  border-left-color: #dc2626;
+}
+
+.whynot-item-enhanced.high {
+  border-left-color: #ea580c;
+}
+
+.whynot-item-enhanced.medium {
+  border-left-color: #ca8a04;
+}
+
+.whynot-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.whynot-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.whynot-item-enhanced .whynot-competitor {
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+}
+
+.whynot-item-enhanced .whynot-platform {
+  font-size: 11px;
+  padding: 3px 8px;
+  background: #334155;
+  border-radius: 4px;
+  color: #94a3b8;
+}
+
+.whynot-category {
+  font-size: 11px;
+  padding: 3px 8px;
+  background: #1e3a5f;
+  border-radius: 4px;
+  color: #60a5fa;
+}
+
+.impact-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.impact-badge.critical {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.impact-badge.high {
+  background: #ffedd5;
+  color: #ea580c;
+}
+
+.impact-badge.medium {
+  background: #fef3c7;
+  color: #ca8a04;
+}
+
+.impact-badge.low {
+  background: #ecfccb;
+  color: #65a30d;
+}
+
+.whynot-item-enhanced .whynot-reason {
+  font-size: 13px;
+  color: #cbd5e1;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+/* Status Comparison */
+.status-comparison {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+  padding: 12px;
+  background: #1e293b;
+  border-radius: 8px;
+}
+
+.status-you,
+.status-competitor {
+  flex: 1;
+}
+
+.status-label {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.status-value {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.status-value.bad {
+  color: #f87171;
+}
+
+.status-value.good {
+  color: #4ade80;
+}
+
+.status-vs {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* Action Box */
+.whynot-action-box {
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(34, 197, 94, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.action-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.action-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.whynot-action-box .action-label {
+  font-size: 11px;
+  color: #22c55e;
+  font-weight: 600;
+}
+
+.whynot-action-box .action-text {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+/* ============ Enhanced Hallucinations ============ */
+
+/* Stats Overview */
+.hallucination-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 1rem;
+}
+
+.hallucination-stats .stat-item {
+  flex: 1;
+  padding: 16px;
+  background: #1e293b;
+  border-radius: 10px;
+  text-align: center;
+  border: 1px solid #334155;
+}
+
+.hallucination-stats .stat-item.total {
+  border-color: #3b82f6;
+}
+
+.hallucination-stats .stat-item.critical {
+  border-color: #dc2626;
+}
+
+.hallucination-stats .stat-item.high {
+  border-color: #ea580c;
+}
+
+.hallucination-stats .stat-number {
+  display: block;
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.hallucination-stats .stat-item.total .stat-number {
+  color: #3b82f6;
+}
+
+.hallucination-stats .stat-item.critical .stat-number {
+  color: #dc2626;
+}
+
+.hallucination-stats .stat-item.high .stat-number {
+  color: #ea580c;
+}
+
+.hallucination-stats .stat-label {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* Enhanced List */
+.hallucination-list-enhanced {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.hallucination-item-enhanced {
+  padding: 1.25rem;
+  background: #0f172a;
+  border-radius: 10px;
+  border: 1px solid #334155;
+}
+
+.hallucination-item-enhanced.critical {
+  border-color: #dc2626;
+  background: rgba(220, 38, 38, 0.05);
+}
+
+.hallucination-item-enhanced.high {
+  border-color: #ea580c;
+}
+
+.hall-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hall-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hallucination-item-enhanced .hall-platform {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+}
+
+.hallucination-item-enhanced .hall-type {
+  font-size: 11px;
+  padding: 4px 10px;
+  background: #334155;
+  color: #94a3b8;
+  border-radius: 4px;
+}
+
+.severity-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+/* Enhanced Comparison */
+.hall-comparison-enhanced {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.hall-comparison-enhanced .hall-wrong,
+.hall-comparison-enhanced .hall-correct {
+  flex: 1;
+  padding: 14px;
+  border-radius: 8px;
+}
+
+.hall-comparison-enhanced .hall-wrong {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.hall-comparison-enhanced .hall-correct {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.hall-comparison-enhanced .hall-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+
+.label-icon {
+  font-size: 12px;
+}
+
+.hall-comparison-enhanced .hall-value {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.hall-comparison-enhanced .hall-wrong .hall-value {
+  color: #f87171;
+}
+
+.hall-comparison-enhanced .hall-correct .hall-value {
+  color: #4ade80;
+}
+
+.hall-arrow {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  color: #64748b;
+}
+
+/* Details */
+.hall-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 1rem;
+  padding: 12px;
+  background: #1e293b;
+  border-radius: 6px;
+}
+
+.hall-detail-item {
+  display: flex;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.detail-label {
+  color: #64748b;
+}
+
+.detail-value {
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+/* Impact Box */
+.hall-impact-box {
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(234, 179, 8, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(234, 179, 8, 0.2);
+  margin-bottom: 1rem;
+}
+
+.impact-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.hall-impact-box .hall-impact {
+  font-size: 13px;
+  color: #fcd34d;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Report Button */
+.report-btn {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.report-btn:hover {
+  background: #334155;
+  color: white;
+}
+
+/* Success Card */
+.success-content {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border-radius: 50%;
+  font-size: 28px;
+  margin-bottom: 1rem;
+}
+
+.success-content h3 {
+  margin-bottom: 0.5rem;
+}
+
+.success-content p {
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .hallucination-stats {
+    flex-direction: column;
+  }
+  
+  .hall-comparison-enhanced {
+    flex-direction: column;
+  }
+  
+  .hall-arrow {
+    transform: rotate(90deg);
+    justify-content: center;
+  }
+  
+  .status-comparison {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .whynot-top {
+    flex-direction: column;
+  }
+}

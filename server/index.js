@@ -163,25 +163,57 @@ app.post('/api/free-scan', (req, res) => {
       { name: "Downtown Diner", mentions: 5, diff: 5 - mentionCount }
     ],
     
-    // Why Not Me 分析
+    // Why Not Me 分析 - 更详细的竞争对手对比
     whyNotMe: [
       {
         competitor: "Joe's Pizza",
         platform: "ChatGPT",
+        category: "Semantic Tags",
         reason: "Competitor has 'family-friendly' and 'kid-friendly' semantic tags on Yelp, which matches common search intents.",
-        action: "Add family-friendly attributes to your Yelp and Google Business Profile."
+        action: "Add family-friendly attributes to your Yelp and Google Business Profile.",
+        impact: "high",
+        yourStatus: "Missing 'family-friendly' tag",
+        competitorStatus: "Has 5 family-related tags"
       },
       {
         competitor: "Mario's Kitchen",
         platform: "Perplexity",
+        category: "Data Freshness",
         reason: "Competitor's Foursquare data was updated 2 weeks ago, while yours hasn't been updated in 6 months.",
-        action: "Update your Foursquare business listing with current hours and photos."
+        action: "Update your Foursquare business listing with current hours and photos.",
+        impact: "medium",
+        yourStatus: "Last updated: 6 months ago",
+        competitorStatus: "Last updated: 2 weeks ago"
       },
       {
         competitor: "The Local Bistro",
         platform: "Gemini",
+        category: "Review Signals",
         reason: "Competitor has 47 Google reviews with 4.6 average, you have 12 reviews with 4.2 average.",
-        action: "Encourage customers to leave Google reviews to improve your rating signal."
+        action: "Encourage customers to leave Google reviews to improve your rating signal.",
+        impact: "high",
+        yourStatus: "12 reviews, 4.2★",
+        competitorStatus: "47 reviews, 4.6★"
+      },
+      {
+        competitor: "Corner Cafe",
+        platform: "Claude",
+        category: "Citation Sources",
+        reason: "Competitor is cited by 3 local food blogs that AI uses as authoritative sources.",
+        action: "Reach out to local food bloggers for coverage and reviews.",
+        impact: "medium",
+        yourStatus: "0 blog citations",
+        competitorStatus: "3 blog citations"
+      },
+      {
+        competitor: "Downtown Diner",
+        platform: "All Platforms",
+        category: "NAP Consistency",
+        reason: "Competitor has 100% consistent NAP data across all platforms, while you have conflicts.",
+        action: "Ensure your Name, Address, Phone are identical on all platforms.",
+        impact: "critical",
+        yourStatus: "2 data conflicts found",
+        competitorStatus: "100% consistent"
       }
     ],
     
@@ -193,21 +225,51 @@ app.post('/api/free-scan', (req, res) => {
       { name: "TripAdvisor", status: "warning", detail: "Listing exists but not claimed" }
     ],
     
-    // 幻觉检测
+    // 幻觉检测 - 更详细的对比
     hallucinations: Math.random() > 0.5 ? [
       {
         platform: "ChatGPT",
         type: "Business Hours",
+        severity: "critical",
         aiSays: "Open until 10 PM on Sundays",
         reality: "Closed on Sundays",
-        impact: "Customers may arrive when you're closed, leading to negative reviews."
+        impact: "Customers may arrive when you're closed, leading to negative reviews.",
+        source: "Outdated Google Maps data",
+        detectedAt: "2 days ago",
+        occurrences: 5
       },
       {
         platform: "Gemini",
         type: "Menu Item",
+        severity: "medium",
         aiSays: "Known for their lobster bisque",
         reality: "You don't serve lobster bisque",
-        impact: "Customers expecting this dish will be disappointed."
+        impact: "Customers expecting this dish will be disappointed.",
+        source: "Confused with nearby restaurant",
+        detectedAt: "1 week ago",
+        occurrences: 3
+      },
+      {
+        platform: "Perplexity",
+        type: "Location",
+        severity: "high",
+        aiSays: "Located on Main Street",
+        reality: "Located on Oak Avenue",
+        impact: "Customers may go to wrong location.",
+        source: "Bing Places incorrect data",
+        detectedAt: "3 days ago",
+        occurrences: 2
+      },
+      {
+        platform: "Claude",
+        type: "Price Range",
+        severity: "low",
+        aiSays: "Budget-friendly option under $15",
+        reality: "Average meal costs $25-35",
+        impact: "Price-sensitive customers may feel misled.",
+        source: "Outdated menu pricing",
+        detectedAt: "5 days ago",
+        occurrences: 1
       }
     ] : []
   };

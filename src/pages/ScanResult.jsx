@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './ScanResult.css';
 
 // 平台图标映射
 const PLATFORM_INFO = {
-  chatgpt: { name: 'ChatGPT', color: '#10a37f' },
-  perplexity: { name: 'Perplexity', color: '#20808d' },
-  gemini: { name: 'Gemini', color: '#8e44ad' },
-  claude: { name: 'Claude', color: '#d97706' }
+  chatgpt: { name: 'ChatGPT', color: '#10a37f', icon: '🤖' },
+  perplexity: { name: 'Perplexity', color: '#20808d', icon: '🔍' },
+  gemini: { name: 'Gemini', color: '#8e44ad', icon: '✨' },
+  claude: { name: 'Claude', color: '#d97706', icon: '🧠' }
+};
+
+// 严重程度配置
+const SEVERITY_CONFIG = {
+  critical: { label: 'Critical', color: '#dc2626', bg: '#fee2e2' },
+  high: { label: 'High', color: '#ea580c', bg: '#ffedd5' },
+  medium: { label: 'Medium', color: '#ca8a04', bg: '#fef3c7' },
+  low: { label: 'Low', color: '#65a30d', bg: '#ecfccb' }
 };
 
 export default function ScanResult({ result, onBack, onSignup }) {
@@ -15,6 +23,13 @@ export default function ScanResult({ result, onBack, onSignup }) {
   if (!result) return null;
 
   const { business, competitors, citations, hallucinations, whyNotMe } = result;
+
+  // 计算幻觉统计
+  const hallucinationStats = {
+    total: hallucinations?.length || 0,
+    critical: hallucinations?.filter(h => h.severity === 'critical').length || 0,
+    high: hallucinations?.filter(h => h.severity === 'high').length || 0
+  };
 
   return (
     <div className="scan-result-page">
@@ -76,6 +91,9 @@ export default function ScanResult({ result, onBack, onSignup }) {
           onClick={() => setActiveTab('hallucinations')}
         >
           Hallucinations
+          {hallucinationStats.total > 0 && (
+            <span className="tab-badge danger">{hallucinationStats.total}</span>
+          )}
         </button>
       </nav>
 
@@ -91,6 +109,7 @@ export default function ScanResult({ result, onBack, onSignup }) {
                 {Object.entries(result.platformScores).map(([platform, data]) => (
                   <div key={platform} className="platform-row">
                     <div className="platform-name" style={{ color: PLATFORM_INFO[platform]?.color }}>
+                      <span className="platform-icon">{PLATFORM_INFO[platform]?.icon}</span>
                       {PLATFORM_INFO[platform]?.name || platform}
                     </div>
                     <div className="platform-bar-wrap">
@@ -104,7 +123,7 @@ export default function ScanResult({ result, onBack, onSignup }) {
                     </div>
                     <div className="platform-score">{data.score}%</div>
                     <div className={`platform-status ${data.status}`}>
-                      {data.status === 'indexed' ? 'Indexed' : data.status === 'warning' ? 'Warning' : 'Not Found'}
+                      {data.status === 'indexed' ? '✓ Indexed' : data.status === 'warning' ? '⚠ Warning' : '✗ Not Found'}
                     </div>
                   </div>
                 ))}
@@ -131,22 +150,54 @@ export default function ScanResult({ result, onBack, onSignup }) {
           </div>
         )}
 
-        {/* Why Not Me Tab */}
+        {/* Why Not Me Tab - 增强版 */}
         {activeTab === 'whynot' && (
           <div className="tab-panel">
             <div className="card">
               <h3>Why Competitors Rank Higher</h3>
-              <div className="whynot-list">
+              <p className="card-desc">Detailed analysis of what your competitors are doing better</p>
+              
+              <div className="whynot-list-enhanced">
                 {whyNotMe.map((reason, idx) => (
-                  <div key={idx} className="whynot-item">
-                    <div className="whynot-header">
-                      <span className="whynot-competitor">{reason.competitor}</span>
-                      <span className="whynot-platform">{reason.platform}</span>
+                  <div key={idx} className={`whynot-item-enhanced ${reason.impact || 'medium'}`}>
+                    <div className="whynot-top">
+                      <div className="whynot-meta">
+                        <span className="whynot-competitor">{reason.competitor}</span>
+                        <span className="whynot-platform">{reason.platform}</span>
+                        {reason.category && (
+                          <span className="whynot-category">{reason.category}</span>
+                        )}
+                      </div>
+                      {reason.impact && (
+                        <span className={`impact-badge ${reason.impact}`}>
+                          {reason.impact.toUpperCase()} IMPACT
+                        </span>
+                      )}
                     </div>
+                    
                     <p className="whynot-reason">{reason.reason}</p>
-                    <div className="whynot-action">
-                      <span className="action-label">Fix:</span>
-                      <span className="action-text">{reason.action}</span>
+                    
+                    {/* 对比展示 */}
+                    {(reason.yourStatus || reason.competitorStatus) && (
+                      <div className="status-comparison">
+                        <div className="status-you">
+                          <span className="status-label">You</span>
+                          <span className="status-value bad">{reason.yourStatus}</span>
+                        </div>
+                        <div className="status-vs">vs</div>
+                        <div className="status-competitor">
+                          <span className="status-label">{reason.competitor}</span>
+                          <span className="status-value good">{reason.competitorStatus}</span>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="whynot-action-box">
+                      <span className="action-icon">💡</span>
+                      <div className="action-content">
+                        <span className="action-label">Recommended Fix:</span>
+                        <span className="action-text">{reason.action}</span>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -230,39 +281,109 @@ export default function ScanResult({ result, onBack, onSignup }) {
           </div>
         )}
 
-        {/* Hallucinations Tab */}
+        {/* Hallucinations Tab - 增强版 */}
         {activeTab === 'hallucinations' && (
           <div className="tab-panel">
-            {hallucinations.length > 0 ? (
+            {/* 幻觉统计概览 */}
+            {hallucinations && hallucinations.length > 0 && (
+              <div className="hallucination-stats">
+                <div className="stat-item total">
+                  <span className="stat-number">{hallucinationStats.total}</span>
+                  <span className="stat-label">Total Issues</span>
+                </div>
+                <div className="stat-item critical">
+                  <span className="stat-number">{hallucinationStats.critical}</span>
+                  <span className="stat-label">Critical</span>
+                </div>
+                <div className="stat-item high">
+                  <span className="stat-number">{hallucinationStats.high}</span>
+                  <span className="stat-label">High Priority</span>
+                </div>
+              </div>
+            )}
+
+            {hallucinations && hallucinations.length > 0 ? (
               <div className="card danger-card">
                 <h3>⚠ AI Is Spreading Misinformation</h3>
                 <p className="card-desc">We found {hallucinations.length} incorrect statements about your business</p>
-                <div className="hallucination-list">
+                
+                <div className="hallucination-list-enhanced">
                   {hallucinations.map((h, idx) => (
-                    <div key={idx} className="hallucination-item">
-                      <div className="hall-header">
-                        <span className="hall-platform">{h.platform}</span>
-                        <span className="hall-type">{h.type}</span>
+                    <div key={idx} className={`hallucination-item-enhanced ${h.severity || 'medium'}`}>
+                      <div className="hall-top">
+                        <div className="hall-meta">
+                          <span className="hall-platform">
+                            {PLATFORM_INFO[h.platform.toLowerCase()]?.icon} {h.platform}
+                          </span>
+                          <span className="hall-type">{h.type}</span>
+                        </div>
+                        <span 
+                          className="severity-badge"
+                          style={{ 
+                            background: SEVERITY_CONFIG[h.severity]?.bg,
+                            color: SEVERITY_CONFIG[h.severity]?.color
+                          }}
+                        >
+                          {SEVERITY_CONFIG[h.severity]?.label || h.severity}
+                        </span>
                       </div>
-                      <div className="hall-comparison">
+                      
+                      <div className="hall-comparison-enhanced">
                         <div className="hall-wrong">
-                          <span className="hall-label">AI Says:</span>
-                          <span className="hall-value">{h.aiSays}</span>
+                          <div className="hall-label">
+                            <span className="label-icon">❌</span>
+                            AI Says:
+                          </div>
+                          <div className="hall-value">{h.aiSays}</div>
                         </div>
+                        <div className="hall-arrow">→</div>
                         <div className="hall-correct">
-                          <span className="hall-label">Reality:</span>
-                          <span className="hall-value">{h.reality}</span>
+                          <div className="hall-label">
+                            <span className="label-icon">✓</span>
+                            Reality:
+                          </div>
+                          <div className="hall-value">{h.reality}</div>
                         </div>
                       </div>
-                      <p className="hall-impact">{h.impact}</p>
+                      
+                      <div className="hall-details">
+                        {h.source && (
+                          <div className="hall-detail-item">
+                            <span className="detail-label">Source:</span>
+                            <span className="detail-value">{h.source}</span>
+                          </div>
+                        )}
+                        {h.detectedAt && (
+                          <div className="hall-detail-item">
+                            <span className="detail-label">Detected:</span>
+                            <span className="detail-value">{h.detectedAt}</span>
+                          </div>
+                        )}
+                        {h.occurrences && (
+                          <div className="hall-detail-item">
+                            <span className="detail-label">Occurrences:</span>
+                            <span className="detail-value">{h.occurrences}x in last week</span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="hall-impact-box">
+                        <span className="impact-icon">⚡</span>
+                        <p className="hall-impact">{h.impact}</p>
+                      </div>
+                      
+                      <button className="report-btn">Report to {h.platform}</button>
                     </div>
                   ))}
                 </div>
               </div>
             ) : (
               <div className="card success-card">
-                <h3>✓ No Hallucinations Detected</h3>
-                <p>AI platforms are reporting accurate information about your business.</p>
+                <div className="success-content">
+                  <span className="success-icon">✓</span>
+                  <h3>No Hallucinations Detected</h3>
+                  <p>AI platforms are reporting accurate information about your business.</p>
+                </div>
               </div>
             )}
 
