@@ -3,6 +3,93 @@ import './Dashboard.css';
 
 // ============ Mock 数据 ============
 
+// 关键词追踪 Mock 数据
+const MOCK_KEYWORDS = {
+  maxKeywords: 15,
+  tracked: [
+    { 
+      id: 1, 
+      keyword: "best french restaurant sydney", 
+      rank: 2, 
+      prevRank: 3,
+      visibility: 78,
+      mentions: 8,
+      platforms: { chatgpt: 1, gemini: 3, perplexity: 2, claude: 2 }
+    },
+    { 
+      id: 2, 
+      keyword: "romantic dinner surry hills", 
+      rank: 3, 
+      prevRank: 5,
+      visibility: 65,
+      mentions: 6,
+      platforms: { chatgpt: 2, gemini: 4, perplexity: 3, claude: 3 }
+    },
+    { 
+      id: 3, 
+      keyword: "french bistro near me", 
+      rank: 1, 
+      prevRank: 1,
+      visibility: 92,
+      mentions: 12,
+      platforms: { chatgpt: 1, gemini: 1, perplexity: 1, claude: 2 }
+    },
+    { 
+      id: 4, 
+      keyword: "business lunch sydney cbd", 
+      rank: 5, 
+      prevRank: 4,
+      visibility: 45,
+      mentions: 3,
+      platforms: { chatgpt: 6, gemini: 5, perplexity: 4, claude: 5 }
+    },
+    { 
+      id: 5, 
+      keyword: "wine bar surry hills", 
+      rank: 4, 
+      prevRank: 6,
+      visibility: 58,
+      mentions: 5,
+      platforms: { chatgpt: 3, gemini: 5, perplexity: 4, claude: 4 }
+    },
+    { 
+      id: 6, 
+      keyword: "special occasion restaurant", 
+      rank: 2, 
+      prevRank: 2,
+      visibility: 72,
+      mentions: 7,
+      platforms: { chatgpt: 2, gemini: 2, perplexity: 3, claude: 1 }
+    },
+    { 
+      id: 7, 
+      keyword: "authentic french food", 
+      rank: 1, 
+      prevRank: 2,
+      visibility: 88,
+      mentions: 10,
+      platforms: { chatgpt: 1, gemini: 1, perplexity: 2, claude: 1 }
+    },
+  ],
+  suggestions: [
+    { keyword: "date night restaurant", searchVolume: "High", competition: "Medium" },
+    { keyword: "french cuisine waterloo", searchVolume: "Medium", competition: "Low" },
+    { keyword: "cozy restaurant sydney", searchVolume: "High", competition: "High" },
+    { keyword: "outdoor dining surry hills", searchVolume: "Medium", competition: "Low" },
+    { keyword: "late night dining sydney", searchVolume: "Medium", competition: "Medium" },
+  ],
+  weeklyHistory: [
+    { week: "W1", avgRank: 3.2, avgVisibility: 62 },
+    { week: "W2", avgRank: 3.0, avgVisibility: 65 },
+    { week: "W3", avgRank: 2.8, avgVisibility: 68 },
+    { week: "W4", avgRank: 2.9, avgVisibility: 66 },
+    { week: "W5", avgRank: 2.6, avgVisibility: 70 },
+    { week: "W6", avgRank: 2.4, avgVisibility: 73 },
+    { week: "W7", avgRank: 2.5, avgVisibility: 71 },
+    { week: "W8", avgRank: 2.3, avgVisibility: 75 },
+  ]
+};
+
 const MOCK_BUSINESS = {
   name: "Bistrot 916",
   category: "French Restaurant",
@@ -491,11 +578,206 @@ function FingerprintCard({ data }) {
   );
 }
 
+// 关键词追踪卡片
+function KeywordTrackingCard({ data }) {
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newKeyword, setNewKeyword] = useState('');
+
+  const getRankChange = (current, prev) => {
+    const diff = prev - current;
+    if (diff > 0) return { direction: 'up', value: diff };
+    if (diff < 0) return { direction: 'down', value: Math.abs(diff) };
+    return { direction: 'same', value: 0 };
+  };
+
+  const getPlatformRankClass = (rank) => {
+    if (rank <= 3) return 'top';
+    if (rank <= 5) return 'mid';
+    return 'low';
+  };
+
+  return (
+    <div className="insight-card keyword-card">
+      <div className="card-header">
+        <h3>Keyword Tracking</h3>
+        <div className="keyword-count">
+          {data.tracked.length} / {data.maxKeywords} keywords
+        </div>
+      </div>
+
+      <p className="card-intro">
+        Track how you rank for specific search queries across all AI platforms. 
+        Updated weekly.
+      </p>
+
+      {/* 总体趋势 */}
+      <div className="keyword-overview">
+        <div className="overview-stat">
+          <span className="stat-value">{data.weeklyHistory[data.weeklyHistory.length - 1].avgRank.toFixed(1)}</span>
+          <span className="stat-label">Avg Rank</span>
+        </div>
+        <div className="overview-stat">
+          <span className="stat-value">{data.weeklyHistory[data.weeklyHistory.length - 1].avgVisibility}%</span>
+          <span className="stat-label">Avg Visibility</span>
+        </div>
+        <div className="overview-chart">
+          <span className="chart-label">8-Week Trend</span>
+          <div className="mini-chart">
+            {data.weeklyHistory.map((point, idx) => (
+              <div 
+                key={idx} 
+                className="mini-bar"
+                style={{ height: `${point.avgVisibility}%` }}
+                title={`${point.week}: ${point.avgVisibility}%`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 关键词列表 */}
+      <div className="tracked-keywords">
+        <div className="keywords-header">
+          <h4>Tracked Keywords</h4>
+          <button 
+            className="add-keyword-btn"
+            onClick={() => setShowAddModal(true)}
+            disabled={data.tracked.length >= data.maxKeywords}
+          >
+            + Add Keyword
+          </button>
+        </div>
+
+        <div className="keywords-table-wrap">
+          <table className="keywords-table">
+            <thead>
+              <tr>
+                <th>Keyword</th>
+                <th>Rank</th>
+                <th>Visibility</th>
+                <th>ChatGPT</th>
+                <th>Gemini</th>
+                <th>Perplexity</th>
+                <th>Claude</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.tracked.map((kw) => {
+                const change = getRankChange(kw.rank, kw.prevRank);
+                return (
+                  <tr key={kw.id}>
+                    <td className="keyword-cell">
+                      <span className="keyword-text">{kw.keyword}</span>
+                      <span className="keyword-mentions">{kw.mentions} mentions</span>
+                    </td>
+                    <td className="rank-cell">
+                      <span className={`rank-value ${kw.rank <= 3 ? 'top' : kw.rank <= 5 ? 'mid' : 'low'}`}>
+                        #{kw.rank}
+                      </span>
+                      {change.direction !== 'same' && (
+                        <span className={`rank-change ${change.direction}`}>
+                          {change.direction === 'up' ? '↑' : '↓'}{change.value}
+                        </span>
+                      )}
+                    </td>
+                    <td className="visibility-cell">
+                      <div className="visibility-bar-wrap">
+                        <div 
+                          className="visibility-bar"
+                          style={{ 
+                            width: `${kw.visibility}%`,
+                            background: kw.visibility >= 70 ? '#22c55e' : kw.visibility >= 40 ? '#eab308' : '#ef4444'
+                          }}
+                        />
+                      </div>
+                      <span className="visibility-value">{kw.visibility}%</span>
+                    </td>
+                    <td className={`platform-rank ${getPlatformRankClass(kw.platforms.chatgpt)}`}>
+                      #{kw.platforms.chatgpt}
+                    </td>
+                    <td className={`platform-rank ${getPlatformRankClass(kw.platforms.gemini)}`}>
+                      #{kw.platforms.gemini}
+                    </td>
+                    <td className={`platform-rank ${getPlatformRankClass(kw.platforms.perplexity)}`}>
+                      #{kw.platforms.perplexity}
+                    </td>
+                    <td className={`platform-rank ${getPlatformRankClass(kw.platforms.claude)}`}>
+                      #{kw.platforms.claude}
+                    </td>
+                    <td className="action-cell">
+                      <button className="remove-btn" title="Remove keyword">×</button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* 建议关键词 */}
+      <div className="suggested-keywords">
+        <h4>Suggested Keywords</h4>
+        <p className="suggest-intro">Based on your category and location:</p>
+        <div className="suggestions-list">
+          {data.suggestions.map((suggestion, idx) => (
+            <div key={idx} className="suggestion-item">
+              <span className="suggestion-keyword">"{suggestion.keyword}"</span>
+              <div className="suggestion-meta">
+                <span className={`volume-badge ${suggestion.searchVolume.toLowerCase()}`}>
+                  {suggestion.searchVolume} Volume
+                </span>
+                <span className={`competition-badge ${suggestion.competition.toLowerCase()}`}>
+                  {suggestion.competition} Competition
+                </span>
+              </div>
+              <button className="track-btn">Track</button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 添加关键词弹窗 */}
+      {showAddModal && (
+        <div className="keyword-modal-overlay" onClick={() => setShowAddModal(false)}>
+          <div className="keyword-modal" onClick={e => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setShowAddModal(false)}>×</button>
+            <h3>Add New Keyword</h3>
+            <p>Enter a search query you want to track across AI platforms.</p>
+            <input
+              type="text"
+              placeholder="e.g., best french restaurant sydney"
+              value={newKeyword}
+              onChange={e => setNewKeyword(e.target.value)}
+              className="keyword-input"
+            />
+            <div className="modal-actions">
+              <button className="cancel-btn" onClick={() => setShowAddModal(false)}>Cancel</button>
+              <button 
+                className="confirm-btn"
+                onClick={() => {
+                  alert(`Keyword "${newKeyword}" added! (Mock)`);
+                  setNewKeyword('');
+                  setShowAddModal(false);
+                }}
+                disabled={!newKeyword.trim()}
+              >
+                Add Keyword
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ============ 主组件 ============
 
 export default function Dashboard() {
   const [business] = useState(MOCK_BUSINESS);
-  const [activeInsightTab, setActiveInsightTab] = useState('sentiment');
+  const [activeInsightTab, setActiveInsightTab] = useState('keywords');
 
   return (
     <div className="dashboard-page">
@@ -655,6 +937,12 @@ export default function Dashboard() {
             <h2>Deep Insights</h2>
             <div className="insights-tabs">
               <button 
+                className={`tab-btn ${activeInsightTab === 'keywords' ? 'active' : ''}`}
+                onClick={() => setActiveInsightTab('keywords')}
+              >
+                🎯 Keywords
+              </button>
+              <button 
                 className={`tab-btn ${activeInsightTab === 'sentiment' ? 'active' : ''}`}
                 onClick={() => setActiveInsightTab('sentiment')}
               >
@@ -676,6 +964,7 @@ export default function Dashboard() {
           </div>
 
           <div className="insights-content">
+            {activeInsightTab === 'keywords' && <KeywordTrackingCard data={MOCK_KEYWORDS} />}
             {activeInsightTab === 'sentiment' && <SentimentCard data={MOCK_SENTIMENT} />}
             {activeInsightTab === 'nap' && <NAPCard data={MOCK_NAP} />}
             {activeInsightTab === 'fingerprint' && <FingerprintCard data={MOCK_FINGERPRINT} />}
